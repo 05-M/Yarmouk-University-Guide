@@ -17,6 +17,7 @@ import com.mido.yarmoukguide.userinterface.viewmodel.screens.FaqScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.GenderSelectionScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.HomeScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.RoleSelectionScreen
+import com.mido.yarmoukguide.userinterface.viewmodel.screens.ScheduleScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.SplashScreen
 
 object AppRoutes {
@@ -79,7 +80,7 @@ class MainActivity : ComponentActivity() {
                         ComingSoonScreen()
                     }
                     composable(route = AppRoutes.SCHEDULE_SCREEN) {
-                        ComingSoonScreen(screenName = "My Schedule")
+                        ScheduleScreen(navController = navController)
                     }
                     composable(route = AppRoutes.NEWS_AND_EVENTS_SCREEN) {
                         ComingSoonScreen(screenName = "News & Events")
