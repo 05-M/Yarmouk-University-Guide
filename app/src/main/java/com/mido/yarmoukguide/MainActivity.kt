@@ -3,11 +3,13 @@ package com.mido.yarmoukguide
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.mido.yarmoukguide.data.YarmoukGuideDatabase
 import com.mido.yarmoukguide.ui.theme.YarmoukGuideTheme
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.CampusMapScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.CollegesScreen
@@ -19,6 +21,7 @@ import com.mido.yarmoukguide.userinterface.viewmodel.screens.HomeScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.RoleSelectionScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.ScheduleScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.SplashScreen
+
 
 object AppRoutes {
     const val SPLASH_SCREEN = "splash"
@@ -40,7 +43,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             YarmoukGuideTheme {
                 val navController = rememberNavController()
-
                 NavHost(
                     navController = navController,
                     startDestination = AppRoutes.SPLASH_SCREEN
@@ -58,13 +60,14 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(navController = navController)
                     }
                     composable(route = AppRoutes.COLLEGES_SCREEN) {
+                        val dao = YarmoukGuideDatabase.getDatabase(LocalContext.current).facultyDao()
                         CollegesScreen(navController = navController)
                     }
                     composable(
-                        route = AppRoutes.FACULTY_DETAILS_SCREEN,
+                        route = "faculty_details/{facultyId}",
                         arguments = listOf(navArgument("facultyId") { type = NavType.StringType })
                     ) { backStackEntry ->
-                        val facultyId = backStackEntry.arguments?.getString("facultyId")
+                        val facultyId = backStackEntry.arguments?.getInt("facultyId")
                         FacultyDetailsScreen(
                             facultyId = facultyId,
                             navController = navController

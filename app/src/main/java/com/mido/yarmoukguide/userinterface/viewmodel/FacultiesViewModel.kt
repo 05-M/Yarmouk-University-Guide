@@ -1,35 +1,37 @@
-package com.mido.yarmoukguide.userinterface.viewmodel
+// في ملف: app/src/main/java/com/mido/yarmoukguide/ui/viewmodel/FacultiesViewModel.kt
+
+package com.mido.yarmoukguide.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mido.yarmoukguide.data.Faculty
-import com.mido.yarmoukguide.data.FacultyRepository
+import com.mido.yarmoukguide.data.Repository
 import com.mido.yarmoukguide.data.YarmoukGuideDatabase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class FacultiesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: FacultyRepository
-    val faculties: List<Faculty>
-    init{
-        val facultyDao = YarmoukGuideDatabase.getDataBase(application).facultyDao()
-        repository = FacultyRepository(facultyDao)
+    private val repository: Repository
+    val allFaculties: Flow<List<Faculty>>
 
-        faculties = repository.getAllFaculties()
-        if(faculties.isEmpty()){
-            addInitialData()
-        }
-    }
+    init {
+        val facultyDao = YarmoukGuideDatabase.getDatabase(application).facultyDao()
+        repository = Repository(facultyDao)
+        allFaculties = repository.allFaculties
 
-    private fun addInitialData() {
+        // نضيف البيانات المبدئية لو قاعدة البيانات فاضية
         viewModelScope.launch {
-            repository.addFaculty(Faculty(name = "Science", description = "Faculty of science...."))
-            repository.addFaculty(Faculty(name = "Medicine", description = "Faculty of medicine..."))
-            repository.addFaculty(Faculty(name = "Engineering", description = "Faculty of engineering..."))
-            repository.addFaculty(Faculty(name = "Law", description = "Faculty of law..."))
+            if (repository.allFaculties.first().isEmpty()) {
+                repository.insertInitialData()
+            }
         }
     }
 
-
+    // دالة عشان نجيب كلية واحدة بالـ ID بتاعها
+    fun getFacultyById(id: Int): Flow<Faculty?> {
+        return repository.getFacultyById(id)
+    }
 }

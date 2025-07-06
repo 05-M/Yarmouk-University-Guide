@@ -14,25 +14,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.mido.yarmoukguide.ui.theme.YarmoukGuideTheme
-import com.mido.yarmoukguide.userinterface.viewmodel.FacultiesViewModel
+import com.mido.yarmoukguide.ui.viewmodel.FacultiesViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FacultyDetailsScreen(
-    facultyId: String?,
+    facultyId: Int?,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val viewModel: FacultiesViewModel = viewModel()
-    val faculty = viewModel.faculties.find { it.id == facultyId?.toIntOrNull() }
+    val faculty by viewModel.getFacultyById(facultyId ?: -1).collectAsState(initial = null)
 
     Scaffold(
         topBar = {
@@ -54,7 +56,7 @@ fun FacultyDetailsScreen(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(text = faculty.description, style = MaterialTheme.typography.bodyLarge)
+                Text(text = faculty!!.description, style = MaterialTheme.typography.bodyLarge)
             }
         } else {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -68,6 +70,5 @@ fun FacultyDetailsScreen(
 @Composable
 fun FacultyDetailsScreenPreview() {
     YarmoukGuideTheme {
-        FacultyDetailsScreen(facultyId = "1", navController = rememberNavController())
     }
 }
