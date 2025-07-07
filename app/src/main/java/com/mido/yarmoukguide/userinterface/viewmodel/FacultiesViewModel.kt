@@ -1,37 +1,21 @@
-// في ملف: app/src/main/java/com/mido/yarmoukguide/ui/viewmodel/FacultiesViewModel.kt
+// في ملف ui/viewmodel/FacultiesViewModel.kt
 
-package com.mido.yarmoukguide.ui.viewmodel
+package com.mido.yarmoukguide.ui.viewmodel // تأكد من الباكج نيم
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import com.mido.yarmoukguide.data.Faculty
-import com.mido.yarmoukguide.data.Repository
-import com.mido.yarmoukguide.data.YarmoukGuideDatabase
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModel
+import com.mido.yarmoukguide.data.Faculty // لازم نعمل import للـ data class بتاعنا
 
-class FacultiesViewModel(application: Application) : AndroidViewModel(application) {
+class FacultiesViewModel : ViewModel() {
 
-    private val repository: Repository
-    val allFaculties: Flow<List<Faculty>>
-
-    init {
-        val facultyDao = YarmoukGuideDatabase.getDatabase(application).facultyDao()
-        repository = Repository(facultyDao)
-        allFaculties = repository.allFaculties
-
-        // نضيف البيانات المبدئية لو قاعدة البيانات فاضية
-        viewModelScope.launch {
-            if (repository.allFaculties.first().isEmpty()) {
-                repository.insertInitialData()
-            }
-        }
-    }
-
-    // دالة عشان نجيب كلية واحدة بالـ ID بتاعها
-    fun getFacultyById(id: Int): Flow<Faculty?> {
-        return repository.getFacultyById(id)
-    }
+    // --- هنا الجزء المهم اللي غالباً ناقص ---
+    // بنعرف خاصية (property) اسمها faculties جوه الكلاس
+    val faculties: List<Faculty> = listOf(
+        Faculty(1, "Science", "The Faculty of Science has many departments..."),
+        Faculty(2, "Medicine", "The Faculty of Medicine is one of the top faculties..."),
+        Faculty(3, "Engineering", "The Faculty of Engineering is known for..."),
+        Faculty(4, "Law", "The Faculty of Law prepares students for..."),
+        Faculty(5, "Arts", "The Faculty of Arts includes various language and humanities departments."),
+        Faculty(6, "Economics", "The Faculty of Economics and Administrative Sciences.")
+    )
+    // ------------------------------------
 }

@@ -16,8 +16,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +35,7 @@ fun CollegesScreen(
     modifier: Modifier = Modifier
 ) {
     val viewModel: FacultiesViewModel = viewModel()
-    val faculties by viewModel.allFaculties.collectAsState(initial = emptyList())
+    val faculties = viewModel.faculties
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -48,6 +46,7 @@ fun CollegesScreen(
             FacultyCard(
                 faculty = faculty,
                 onClick = {
+                    println("Navigating with ID: ${faculty.id}")
                     val route = AppRoutes.FACULTY_DETAILS_SCREEN.replace(
                         oldValue = "{facultyId}",
                         newValue = faculty.id.toString()

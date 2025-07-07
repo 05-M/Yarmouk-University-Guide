@@ -64,10 +64,10 @@ class MainActivity : ComponentActivity() {
                         CollegesScreen(navController = navController)
                     }
                     composable(
-                        route = "faculty_details/{facultyId}",
+                        route = AppRoutes.FACULTY_DETAILS_SCREEN,
                         arguments = listOf(navArgument("facultyId") { type = NavType.StringType })
                     ) { backStackEntry ->
-                        val facultyId = backStackEntry.arguments?.getInt("facultyId")
+                        val facultyId = backStackEntry.arguments?.getString("facultyId")
                         FacultyDetailsScreen(
                             facultyId = facultyId,
                             navController = navController
