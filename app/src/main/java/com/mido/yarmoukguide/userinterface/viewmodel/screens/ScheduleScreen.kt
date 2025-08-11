@@ -1,5 +1,7 @@
 package com.mido.yarmoukguide.userinterface.viewmodel.screens
 
+import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,8 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import com.mido.yarmoukguide.data.Lecture
 import com.mido.yarmoukguide.ui.theme.YarmoukGuideTheme
 import com.mido.yarmoukguide.userinterface.viewmodel.ScheduleViewModel
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,8 +61,10 @@ fun ScheduleScreen(
         }
     ){innerPadding ->
         LazyColumn(
-            modifier = modifier.padding(innerPadding)
-                .fillMaxSize(),
+            modifier = modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ){
@@ -81,12 +83,13 @@ fun ScheduleScreen(
 
 @Composable
 fun DaySchedule(day: String, lectures: List<Lecture>, modifier: Modifier = Modifier){
-    Column(modifier = modifier) {
+    Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
         Text(
             text = day,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
+            color = MaterialTheme.colorScheme.onSurface
         )
         // نلف على محاضرات اليوم ده ونعرض كل واحدة في كارت
         lectures.forEach { lecture ->
@@ -98,8 +101,9 @@ fun DaySchedule(day: String, lectures: List<Lecture>, modifier: Modifier = Modif
 
 @Composable
 fun LectureCard(lecture: Lecture, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
+    ElevatedCard(
+        modifier = modifier.fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -112,24 +116,31 @@ fun LectureCard(lecture: Lecture, modifier: Modifier = Modifier) {
                 Text(
                     text = lecture.subjectName,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = lecture.location,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Text(
                 text = "${lecture.startTime} - ${lecture.endTime}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Light Mode")
+@Preview(
+    showBackground = true,
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun ScheduleScreenPreview() {
     YarmoukGuideTheme {

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.YarmoukGuide" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- الـ parent هنا هو الثيم الأساسي بتاع الأندرويد من غير أي تعديلات -->
+    <style name="Theme.YarmoukGuide" parent="android:Theme.Light.NoTitleBar.Fullscreen">
+        <!-- مش محتاجين نحط حاجة هنا للـ Light Mode -->
+    </style>
 </resources>

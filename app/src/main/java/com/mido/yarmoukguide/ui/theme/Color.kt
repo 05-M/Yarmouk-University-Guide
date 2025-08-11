@@ -16,3 +16,11 @@ val AppBackground = Color(0xFFF9F9F9)
 val AppSurface = Color(0xFFFFFFFF)
 val AppTextPrimary = Color(0xFF212121)
 val AppAccent = Color(0xFF50E3C2)
+
+val AppBlueDark = Color(0xFF82B1FF) // أزرق أفتح
+val AppOrangeDark = Color(0xFFFFD180) // برتقالي أفتح
+val AppAccentDark = Color(0xFFA7FFEB) // تركواز أفتح
+
+val AppBackgroundDark = Color(0xFF121212) // أسود شبه كامل (ده اللون المعتمد في Material Design)
+val AppSurfaceDark = Color(0xFF1E1E1E) // لون أغمق شوية للكروت
+val AppTextPrimaryDark = Color(0xFFE0E0E0) // رمادي فاتح جداً للنصوص

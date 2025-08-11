@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.YarmoukGuide" parent="android:Theme.DeviceDefault.NoActionBar.Fullscreen">
+        <!-- هنا بقى بنحط السطر السحري بتاعنا عشان نمنع اللمعة البيضا -->
+        <item name="android:windowBackground">@color/app_background_dark</item>
+    </style>
+</resources>

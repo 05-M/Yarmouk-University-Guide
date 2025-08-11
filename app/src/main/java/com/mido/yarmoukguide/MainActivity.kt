@@ -10,8 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mido.yarmoukguide.data.YarmoukGuideDatabase
+import com.mido.yarmoukguide.ui.screens.NewsScreen
 import com.mido.yarmoukguide.ui.theme.YarmoukGuideTheme
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.CampusMapScreen
+import com.mido.yarmoukguide.userinterface.viewmodel.screens.ChatScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.CollegesScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.ComingSoonScreen
 import com.mido.yarmoukguide.userinterface.viewmodel.screens.FacultyDetailsScreen
@@ -86,13 +88,13 @@ class MainActivity : ComponentActivity() {
                         ScheduleScreen(navController = navController)
                     }
                     composable(route = AppRoutes.NEWS_AND_EVENTS_SCREEN) {
-                        ComingSoonScreen(screenName = "News & Events")
+                        NewsScreen(navController = navController)
                     }
                     composable(route = AppRoutes.SERVICES_AND_FAQ_SCREEN) {
                         FaqScreen(navController = navController)
                     }
                     composable(route = AppRoutes.CHAT_SCREEN) {
-                        ComingSoonScreen(screenName = "Chat")
+                        ChatScreen(navController = navController)
                     }
                 }
             }

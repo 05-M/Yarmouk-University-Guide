@@ -1,15 +1,29 @@
-package com.mido.yarmoukguide.userinterface.viewmodel
+// في ملف ui/viewmodel/FaqViewModel.kt
 
-import androidx.lifecycle.ViewModel
+package com.mido.yarmoukguide.ui.viewmodel
+
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.mido.yarmoukguide.data.FaqItem
+import com.mido.yarmoukguide.data.Repository
+import com.mido.yarmoukguide.data.YarmoukGuideDatabase
+import kotlinx.coroutines.flow.Flow
 
-class FaqViewModel: ViewModel(){
-    val faqList: List<FaqItem> =  listOf(
-        FaqItem(1, "كيف أسجل في الجامعة؟",
-            "التسجيل يتم عبر بوابة الطالب الإلكترونية في بداية كل فصل دراسي. يجب عليك مراجعة التقويم الجامعي لمعرفة المواعيد الدقيقة."),
-        FaqItem(2, "أين يقع مكتب شؤون الطلاب؟", "يقع مكتب شؤون الطلاب في مبنى الإدارة الرئيسي، الدور الثاني، مكتب رقم 204."),
-        FaqItem(3, "كيف يمكنني الحصول على البطاقة الجامعية؟", "يمكنك استلام بطاقتك الجامعية من عمادة شؤون الطلبة بعد إتمام عملية التسجيل ودفع الرسوم."),
-        FaqItem(4, "ما هي مواعيد عمل المكتبة؟", "المكتبة تفتح أبوابها من الساعة 8:00 صباحاً حتى الساعة 4:00 مساءً من الأحد إلى الخميس."),
-        FaqItem(5, "هل يوجد سكن طلابي؟", "نعم، توفر الجامعة سكناً للطلاب والطالبات. يمكنك التقديم عبر موقع السكن الجامعي الرسمي.")
-    )
+class FaqViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repository: Repository
+    val allFaqs: Flow<List<FaqItem>>
+
+    init {
+        // بنعمل نفس اللي عملناه في FacultiesViewModel
+        val database = YarmoukGuideDatabase.getDatabase(application)
+        val facultyDao = database.facultyDao()
+        val departmentDao = database.departmentDao()
+        val faqDao = database.faqDao()
+
+        repository = Repository(facultyDao, departmentDao, faqDao)
+
+        // --- هنا بنجيب الأسئلة من الـ Repository ---
+        allFaqs = repository.allFaqs
+    }
 }

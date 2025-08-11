@@ -7,10 +7,20 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Faculty::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        Faculty::class,
+        Department::class,
+        FaqItem::class
+    ],
+    version = 3,
+    exportSchema = false
+)
 abstract class YarmoukGuideDatabase : RoomDatabase() {
 
     abstract fun facultyDao(): FacultyDao
+    abstract fun departmentDao(): DepartmentDao
+    abstract fun faqDao(): FaqDao
 
     companion object {
         @Volatile
@@ -22,7 +32,9 @@ abstract class YarmoukGuideDatabase : RoomDatabase() {
                     context.applicationContext,
                     YarmoukGuideDatabase::class.java,
                     "yarmouk_guide_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

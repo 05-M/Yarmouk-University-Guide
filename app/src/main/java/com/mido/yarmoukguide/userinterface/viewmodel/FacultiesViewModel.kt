@@ -1,21 +1,66 @@
-// في ملف ui/viewmodel/FacultiesViewModel.kt
+package com.mido.yarmoukguide.userinterface.viewmodel
 
-package com.mido.yarmoukguide.ui.viewmodel // تأكد من الباكج نيم
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.mido.yarmoukguide.data.Department
+import com.mido.yarmoukguide.data.Faculty
+import com.mido.yarmoukguide.data.FacultyType
+import com.mido.yarmoukguide.data.Repository
+import com.mido.yarmoukguide.data.YarmoukGuideDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-import androidx.lifecycle.ViewModel
-import com.mido.yarmoukguide.data.Faculty // لازم نعمل import للـ data class بتاعنا
+// تأكد من الباكج نيم
 
-class FacultiesViewModel : ViewModel() {
+class FacultiesViewModel(application: Application): AndroidViewModel(application){
+    private val repository: Repository
+    val allFaculties: Flow<List<Faculty>>
+    val facultiesByType: StateFlow<Map<FacultyType, List<Faculty>>>
 
-    // --- هنا الجزء المهم اللي غالباً ناقص ---
-    // بنعرف خاصية (property) اسمها faculties جوه الكلاس
-    val faculties: List<Faculty> = listOf(
-        Faculty(1, "Science", "The Faculty of Science has many departments..."),
-        Faculty(2, "Medicine", "The Faculty of Medicine is one of the top faculties..."),
-        Faculty(3, "Engineering", "The Faculty of Engineering is known for..."),
-        Faculty(4, "Law", "The Faculty of Law prepares students for..."),
-        Faculty(5, "Arts", "The Faculty of Arts includes various language and humanities departments."),
-        Faculty(6, "Economics", "The Faculty of Economics and Administrative Sciences.")
-    )
-    // ------------------------------------
+    init{
+        val database = YarmoukGuideDatabase.getDatabase(application)
+        val facultyDao = database.facultyDao()
+        val departmentDao = database.departmentDao()
+        val faqDao = database.faqDao()
+        repository = Repository(facultyDao, departmentDao, faqDao)
+
+        allFaculties = repository.allFaculties
+
+        facultiesByType = repository.allFaculties
+            .map { list -> list.groupBy { it.type } } // بنقسم البيانات
+            .stateIn( // بنحولها لـ StateFlow
+                scope = viewModelScope, // بنستخدم الـ scope بتاع الـ ViewModel
+                started = SharingStarted.WhileSubscribed(5000), // يبدأ يجمع لما الـ UI يبدأ يسمعله
+                initialValue = emptyMap() // قيمة ابتدائية
+            )
+        checkAndPopulateInitialData()
+    }
+
+    private fun checkAndPopulateInitialData() {
+        viewModelScope.launch(Dispatchers.IO){
+            if(repository.allFaculties.firstOrNull().isNullOrEmpty()){
+                println("Database is Empty.Populating initial data...")
+                repository.insertInitialData()
+            } else{
+                println("Database already has data.Skipping populating")
+            }
+        }
+    }
+
+
+    fun getFacultyById(id: Int):Flow<Faculty?>{
+        return repository.getFacultyById(id)
+    }
+
+    fun getDepartmentsForFaculty(facultyId: Int): Flow<List<Department>>{
+        return repository.getDepartmentsForFaculty(facultyId)
+    }
 }
+
