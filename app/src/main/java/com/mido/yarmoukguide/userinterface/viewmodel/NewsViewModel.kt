@@ -1,14 +1,27 @@
 package com.mido.yarmoukguide.userinterface.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.mido.yarmoukguide.data.NewsItem
+import com.mido.yarmoukguide.data.Repository
+import com.mido.yarmoukguide.data.YarmoukGuideDatabase
+import kotlinx.coroutines.flow.Flow
 
-class NewsViewModel: ViewModel(){
-    val newsList: List<NewsItem> = listOf(
-        NewsItem(1, "فتح باب التسجيل للفصل الصيفي", "أعلنت دائرة القبول والتسجيل عن بدء استقبال طلبات التسجيل للفصل الصيفي للعام الدراسي 2024/2025 اعتباراً من الأسبوع القادم.", "July 5, 2025", null),
-        NewsItem(2, "ورشة عمل عن الذكاء الاصطناعي", "تنظم كلية تكنولوجيا المعلومات وعلوم الحاسوب ورشة عمل متقدمة حول أحدث تطبيقات الذكاء الاصطناعي. الدعوة عامة للجميع.", "July 8, 2025", "https://example.com/ai_workshop_image.jpg"),
-        NewsItem(3, "نهائي بطولة الجامعة لكرة القدم", "تقام المباراة النهائية لبطولة الجامعة يوم الخميس القادم على الملعب الرئيسي. لا تفوتوا تشجيع فريقكم!", "July 10, 2025", null),
-        NewsItem(4, "تأجيل امتحانات منتصف الفصل", "نظراً للظروف الجوية، تم تأجيل امتحانات منتصف الفصل المقررة يوم الأربعاء إلى إشعار آخر. يرجى متابعة الإعلانات.", "July 12, 2025", null),
-        NewsItem(5, "افتتاح معرض الكتاب السنوي", "تدعوكم المكتبة الرئيسية لحضور افتتاح معرض الكتاب السنوي، والذي يضم آلاف العناوين الجديدة بخصومات خاصة للطلاب.", "July 15, 2025", "https://example.com/book_fair_image.jpg")
-    )
+class NewsViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: Repository
+    val allNews: Flow<List<NewsItem>>
+
+    init {
+        val database = YarmoukGuideDatabase.getDatabase(application)
+        // بنجيب كل الـ DAOs اللي محتاجينها
+        val facultyDao = database.facultyDao()
+        val departmentDao = database.departmentDao()
+        val faqDao = database.faqDao()
+        val lectureDao = database.lectureDao()
+        val newsDao = database.newsDao()
+
+        repository = Repository(facultyDao, departmentDao, faqDao, lectureDao, newsDao)
+
+        allNews = repository.allNews
+    }
 }

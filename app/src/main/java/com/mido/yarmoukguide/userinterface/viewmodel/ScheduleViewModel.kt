@@ -1,26 +1,29 @@
-package com.mido.yarmoukguide.userinterface.viewmodel
+// في ملف ui/viewmodel/ScheduleViewModel.kt
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.mido.yarmoukguide.data.Lecture
+import com.mido.yarmoukguide.data.Repository
+import com.mido.yarmoukguide.data.YarmoukGuideDatabase
+import kotlinx.coroutines.flow.Flow
 
-class ScheduleViewModel: ViewModel(){
-    val weeklySchedule: List<Lecture> = listOf(
-        // محاضرات يوم الأحد
-        Lecture(1, "CS101: Intro to Programming", "Hall 101", "Sunday", "08:00 AM", "09:30 AM"),
-        Lecture(2, "MATH201: Calculus II", "Hall 305", "Sunday", "11:30 AM", "01:00 PM"),
+class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
-        // محاضرات يوم الإثنين
-        Lecture(3, "PHY102: Physics II", "Lab 2B", "Monday", "10:00 AM", "11:30 AM"),
+    private val repository: Repository
+    val weeklySchedule: Flow<List<Lecture>>
 
-        // محاضرات يوم الثلاثاء
-        Lecture(4, "CS101: Intro to Programming", "Hall 101", "Tuesday", "08:00 AM", "09:30 AM"),
-        Lecture(5, "ENG205: Technical Writing", "Hall 401", "Tuesday", "02:00 PM", "03:30 PM"),
+    init {
+        val database = YarmoukGuideDatabase.getDatabase(application)
+        // بنجيب كل الـ DAOs اللي محتاجينها
+        val facultyDao = database.facultyDao()
+        val departmentDao = database.departmentDao()
+        val faqDao = database.faqDao()
+        val lectureDao = database.lectureDao()
+        val newsDao = database.newsDao()
 
-        // محاضرات يوم الأربعاء
-        Lecture(6, "PHY102: Physics II", "Lab 2B", "Wednesday", "10:00 AM", "11:30 AM"),
-        Lecture(7, "MATH201: Calculus II", "Hall 305", "Wednesday", "11:30 AM", "01:00 PM"),
+        repository = Repository(facultyDao, departmentDao, faqDao, lectureDao, newsDao)
 
-        // محاضرات يوم الخميس
-        Lecture(8, "ENG205: Technical Writing", "Hall 401", "Thursday", "02:00 PM", "03:30 PM")
-    )
+        // --- هنا بنجيب الجدول من الـ Repository ---
+        weeklySchedule = repository.allLectures
+    }
 }

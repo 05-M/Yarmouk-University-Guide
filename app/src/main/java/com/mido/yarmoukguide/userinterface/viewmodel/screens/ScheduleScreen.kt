@@ -1,5 +1,6 @@
 package com.mido.yarmoukguide.userinterface.viewmodel.screens
 
+import ScheduleViewModel
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +36,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mido.yarmoukguide.data.Lecture
 import com.mido.yarmoukguide.ui.theme.YarmoukGuideTheme
-import com.mido.yarmoukguide.userinterface.viewmodel.ScheduleViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +45,7 @@ fun ScheduleScreen(
     modifier: Modifier = Modifier
 ){
     val viewModel: ScheduleViewModel = viewModel()
-    val schedule = viewModel.weeklySchedule
+    val schedule by viewModel.weeklySchedule.collectAsState(initial = emptyList())
 
     val groupedSchedule = schedule.groupBy { it.dayOfWeek }
     val daysOfWeek = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")

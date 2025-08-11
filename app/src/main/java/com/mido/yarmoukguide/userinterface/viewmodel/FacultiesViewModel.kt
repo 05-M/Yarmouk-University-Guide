@@ -8,14 +8,11 @@ import com.mido.yarmoukguide.data.Faculty
 import com.mido.yarmoukguide.data.FacultyType
 import com.mido.yarmoukguide.data.Repository
 import com.mido.yarmoukguide.data.YarmoukGuideDatabase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 // تأكد من الباكج نيم
 
@@ -29,7 +26,10 @@ class FacultiesViewModel(application: Application): AndroidViewModel(application
         val facultyDao = database.facultyDao()
         val departmentDao = database.departmentDao()
         val faqDao = database.faqDao()
-        repository = Repository(facultyDao, departmentDao, faqDao)
+        val lectureDao = database.lectureDao()
+        val newsDao = database.newsDao()
+
+        repository = Repository(facultyDao, departmentDao, faqDao, lectureDao,newsDao)
 
         allFaculties = repository.allFaculties
 
@@ -40,21 +40,7 @@ class FacultiesViewModel(application: Application): AndroidViewModel(application
                 started = SharingStarted.WhileSubscribed(5000), // يبدأ يجمع لما الـ UI يبدأ يسمعله
                 initialValue = emptyMap() // قيمة ابتدائية
             )
-        checkAndPopulateInitialData()
     }
-
-    private fun checkAndPopulateInitialData() {
-        viewModelScope.launch(Dispatchers.IO){
-            if(repository.allFaculties.firstOrNull().isNullOrEmpty()){
-                println("Database is Empty.Populating initial data...")
-                repository.insertInitialData()
-            } else{
-                println("Database already has data.Skipping populating")
-            }
-        }
-    }
-
-
     fun getFacultyById(id: Int):Flow<Faculty?>{
         return repository.getFacultyById(id)
     }

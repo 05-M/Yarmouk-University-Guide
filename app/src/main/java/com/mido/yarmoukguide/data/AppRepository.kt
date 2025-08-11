@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 class Repository(
     private val facultyDao: FacultyDao,
     private val departmentDao: DepartmentDao,
-    private val faqDao: FaqDao
+    private val faqDao: FaqDao,
+    private val lectureDao: LectureDao,
+    private val newsDao: NewsDao
 ) {
 
     val allFaculties: Flow<List<Faculty>> = facultyDao.getAllFaculties()
@@ -20,6 +22,10 @@ class Repository(
     }
 
     val allFaqs: Flow<List<FaqItem>> = faqDao.getAllFaqs()
+
+    val allLectures: Flow<List<Lecture>> = lectureDao.getAllLectures()
+
+    val allNews: Flow<List<NewsItem>> = newsDao.getAllNews()
 
     suspend fun insertInitialData() {
         //الكليات الصحية
@@ -63,5 +69,34 @@ class Repository(
             FaqItem(5, "هل يوجد سكن طلابي؟", "نعم، توفر الجامعة سكناً للطلاب والطالبات. يمكنك التقديم عبر موقع السكن الجامعي الرسمي.")
         )
         faqDao.insertAll(initialFaqs)
+
+        val initialLectures = listOf(
+            Lecture(1, "CS101: Intro to Programming", "Hall 101", "Sunday", "08:00 AM", "09:30 AM"),
+            Lecture(2, "MATH201: Calculus II", "Hall 305", "Sunday", "11:30 AM", "01:00 PM"),
+
+            // محاضرات يوم الإثنين
+            Lecture(3, "PHY102: Physics II", "Lab 2B", "Monday", "10:00 AM", "11:30 AM"),
+
+            // محاضرات يوم الثلاثاء
+            Lecture(4, "CS101: Intro to Programming", "Hall 101", "Tuesday", "08:00 AM", "09:30 AM"),
+            Lecture(5, "ENG205: Technical Writing", "Hall 401", "Tuesday", "02:00 PM", "03:30 PM"),
+
+            // محاضرات يوم الأربعاء
+            Lecture(6, "PHY102: Physics II", "Lab 2B", "Wednesday", "10:00 AM", "11:30 AM"),
+            Lecture(7, "MATH201: Calculus II", "Hall 305", "Wednesday", "11:30 AM", "01:00 PM"),
+
+            // محاضرات يوم الخميس
+            Lecture(8, "ENG205: Technical Writing", "Hall 401", "Thursday", "02:00 PM", "03:30 PM")
+        )
+        lectureDao.insertAll(initialLectures)
+
+        val initialNews =  listOf(
+            NewsItem(1, "فتح باب التسجيل للفصل الصيفي", "أعلنت دائرة القبول والتسجيل عن بدء استقبال طلبات التسجيل للفصل الصيفي للعام الدراسي 2024/2025 اعتباراً من الأسبوع القادم.", "July 5, 2025", null),
+            NewsItem(2, "ورشة عمل عن الذكاء الاصطناعي", "تنظم كلية تكنولوجيا المعلومات وعلوم الحاسوب ورشة عمل متقدمة حول أحدث تطبيقات الذكاء الاصطناعي. الدعوة عامة للجميع.", "July 8, 2025", "https://example.com/ai_workshop_image.jpg"),
+            NewsItem(3, "نهائي بطولة الجامعة لكرة القدم", "تقام المباراة النهائية لبطولة الجامعة يوم الخميس القادم على الملعب الرئيسي. لا تفوتوا تشجيع فريقكم!", "July 10, 2025", null),
+            NewsItem(4, "تأجيل امتحانات منتصف الفصل", "نظراً للظروف الجوية، تم تأجيل امتحانات منتصف الفصل المقررة يوم الأربعاء إلى إشعار آخر. يرجى متابعة الإعلانات.", "July 12, 2025", null),
+            NewsItem(5, "افتتاح معرض الكتاب السنوي", "تدعوكم المكتبة الرئيسية لحضور افتتاح معرض الكتاب السنوي، والذي يضم آلاف العناوين الجديدة بخصومات خاصة للطلاب.", "July 15, 2025", "https://example.com/book_fair_image.jpg")
+        )
+        newsDao.insertAll(initialNews)
     }
 }
