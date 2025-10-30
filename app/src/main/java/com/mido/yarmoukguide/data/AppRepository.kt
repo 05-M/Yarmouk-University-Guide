@@ -2,6 +2,7 @@
 
 package com.mido.yarmoukguide.data
 
+import com.mido.yarmoukguide.R
 import kotlinx.coroutines.flow.Flow
 
 class Repository(
@@ -9,7 +10,9 @@ class Repository(
     private val departmentDao: DepartmentDao,
     private val faqDao: FaqDao,
     private val lectureDao: LectureDao,
-    private val newsDao: NewsDao
+    private val newsDao: NewsDao,
+    private val courseDao: CourseDao,
+    private val professorDao: ProfessorDao
 ) {
 
     val allFaculties: Flow<List<Faculty>> = facultyDao.getAllFaculties()
@@ -21,12 +24,23 @@ class Repository(
     fun getDepartmentsForFaculty(facultyId: Int): Flow<List<Department>> {
         return departmentDao.getDepartmentsForFaculty(facultyId)
     }
+    fun getDepartmentById(id: Int): Flow<Department?> {
+        return departmentDao.getDepartmentById(id)
+    }
 
+    fun getCoursesForDepartment(departmentId: Int): Flow<List<Course>> {
+        return courseDao.getCoursesForDepartment(departmentId)
+    }
+
+    fun getProfessorsForDepartment(departmentId: Int): Flow<List<Professor>> {
+        return professorDao.getProfessorsForDepartment(departmentId)
+    }
     val allFaqs: Flow<List<FaqItem>> = faqDao.getAllFaqs()
 
     val allLectures: Flow<List<Lecture>> = lectureDao.getAllLectures()
 
     val allNews: Flow<List<NewsItem>> = newsDao.getAllNews()
+
 
     suspend fun insertInitialData() {
         //الكليات الصحية
@@ -37,7 +51,13 @@ class Repository(
                     " and the world with competent doctors who are responsible and contribute to healthcare and scientific research." +
                     " The Faculty of Medicine is located within the campus of Yarmouk University," +
                     " the second oldest university in Jordan, established in 1976.",
-            type = FacultyType.MEDICAL))
+            type = FacultyType.MEDICAL,
+            imageResId = R.drawable.faculty_medicine,
+            contactInfo = " اربد- الاردن, ص.ب 566 الرمز البريدي 21163\n" +
+                    " medicine.fac@yu.edu.jo\n" +
+                    " 962-2-7211111 (3037)\n" +
+                    " 7211111 2 962 +",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 2,
             name = "Pharmacy",
@@ -46,12 +66,23 @@ class Repository(
                 " and the world with competent doctors who are responsible and contribute to healthcare and scientific research." +
                 " The Faculty of Pharmacy is located within the campus of Yarmouk University," +
                 " the second oldest university in Jordan, established in 1976.",
-            type = FacultyType.MEDICAL))
+            type = FacultyType.MEDICAL,
+            imageResId = R.drawable.faculty_pharmacy,
+            contactInfo = "Phone : 027211111 (7200/7201)\n" +
+                    "  Fax : 7065 / 7211165\n" +
+                    "  E-mail : Pharmacy.fac@yu.edu.jo\n" +
+                    "  Address :Yarmouk University, Irbid, Jordan",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 3,
             name = "Nursing",
             description = "The Faculty of Narcing in Yarmouk University was established in 2022...",
-            type = FacultyType.MEDICAL))
+            type = FacultyType.MEDICAL,
+            imageResId = R.drawable.faculty_nursing,
+            contactInfo = "العنوان : جامعة اليرموك , اربد, الأردن\n" +
+                    " Narcing.fac@yu.edu.jo\n" +
+                    " 027211111 (...)",
+            locationOnMap = "Building s2, second floor"))
 
         //الكليات العلمية
         facultyDao.insert(Faculty(id = 4,
@@ -60,13 +91,29 @@ class Repository(
                 " concurrently with the establishment of the university, and was part of the College of Science and Arts." +
                 " They were separated into two colleges in 1981. The college currently includes six academic departments:" +
                 " Mathematics, Physics, Chemistry, Statistics, Life Sciences, and Earth and Environmental Sciences.",
-            type = FacultyType.SCIENTIFIC))
+            type = FacultyType.SCIENTIFIC,
+            imageResId = R.drawable.faculty_science,
+            contactInfo = "Phone : 027211111 (2411 / 2412)\n" +
+                    "\n" +
+                    "Fax : 0096227211117\n" +
+                    "\n" +
+                    "E-mail : Science.fac@yu.edu.jo\n" +
+                    "\n" +
+                    "Address :Yarmouk University, Irbid, Jordan",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 5,
             name = "Hijjawi Faculty for Engineering Technology",
             description = "Hijjawi Faculty for Engineering Technology was established in 1984 through the generous " +
                     "support of the Scientific Foundation of Hisham Adeeb Hijjawi.",
-            type = FacultyType.SCIENTIFIC))
+            type = FacultyType.SCIENTIFIC,
+            imageResId = R.drawable.faculty_engineer,
+            contactInfo = "Hijjawi Faculty for Engineering Technology, Yarmouk University, Irbid 21163, Jordan\n" +
+                    "\n" +
+                    " engineering.fac@yu.edu.jo\n" +
+                    "\n" +
+                    " +962 2 721 1111 (4251)",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 6,
             name = "Faculty of information technology and computer science",
@@ -74,7 +121,13 @@ class Repository(
                     "the Faculty of Information Technology and Computer Science at Yarmouk University" +
                     " at the start of the academic year 2002/2003. The department offers a bachelor's" +
                     " degree in Business Information Technology and a specialization in Cybersecurity.",
-            type = FacultyType.SCIENTIFIC))
+            type = FacultyType.SCIENTIFIC,
+            imageResId = R.drawable.faculty_it,
+            contactInfo = "جامعة اليرموك , اربد, الأردن\n" +
+                    " it.fac@yu.edu.jo\n" +
+                    " 027211111 (2632)\n" +
+                    " 0096227211128",
+            locationOnMap = "Building s2, second floor"))
 
         //الكليات الإنسانية
         facultyDao.insert(Faculty(id = 7,
@@ -82,7 +135,13 @@ class Repository(
             description = "The Law Faculty, as an independent entity, commenced its function in September 1999." +
                     "It succeeded the Law Department, which was established " +
                     "in 1991 as part of the Faculty of Economics & Administrative Sciences.",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_law,
+            contactInfo = "اربد- الاردن, ص.ب 566 الرمز البريدي 21163\n" +
+                    " law.fac@yu.edu.jo\n" +
+                    " هاتف : 027211111 (4201)\n" +
+                    " فاكس : 0096227211193",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 8
             , name = "Arts",
@@ -91,14 +150,25 @@ class Repository(
                     " in science, arts, economics, and administrative sciences. The departments of Arabic, English," +
                     " Humanities and Social Sciences were the core of the Faculty of Arts," +
                     " which was established in 1981.",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_arts,
+            contactInfo = "اربد- الاردن, ص.ب 566 الرمز البريدي 21163\n" +
+                    " Art.fac@yu.edu.jo\n" +
+                    " 027211111 (2900)",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 9,
             name = "Business",
             description = "In 1981 Yarmouk University established a unique college under the title of" +
                     " “Faculty of Economics and Administrative Sciences”, with the objective of meeting stakeholders " +
                     "needs and contributing to the national business, organizational and management arena.",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_business,
+            contactInfo = " العنوان : جامعة اليرموك , اربد, الأردن\n" +
+                    " economics.fac@yu.edu.jo\n" +
+                    "  027211111 (6800)\n" +
+                    "  0096227211147",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 10,
             name = "Al-Shari'a",
@@ -109,7 +179,13 @@ class Repository(
                     " whether related to education and caring for the student, who represents the core of the educational" +
                     " process, as he is the highest goal of this college, and being the most important element" +
                     " that supplies the local community with the capabilities and energies capable of meeting the needs of the present and the future",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_sharia,
+            contactInfo = " هاتف : 027211111 (5413)\n" +
+                    "  فاكس : 7211196 (4196)\n" +
+                    "  البريد الالكنروني : sharia.fac@yu.edu.jo\n" +
+                    "  العنوان : جامعة اليرموك , اربد, الأردن",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 11,
             name = "Educational Science",
@@ -123,26 +199,48 @@ class Repository(
                     "In the 2006/2007 academic year, the Primary Education Department branched off from the Department of Curricula" +
                     "and Teaching Methods. However, in 2016/2017, it was reintegrated under the name Department of Curriculum and Methods of " +
                     "Instruction. In 2023, the faculty’s name was officially changed from \"Faculty of Education\" to \"Faculty of Educational Sciences.\"",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_educational_science,
+            contactInfo = "البريد الإلكتروني: education.fac@yu.edu.jo\n" +
+                    "هاتف: 0096227211147\n" +
+                    "فاكس:3729 أو 3728",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 12,
             name = "Physical Education & Sport Sciences",
             description = "The Faculty of Physical Education was established in 1993. Prior to this it was a department at the Faculty of Arts." +
                     "The department was incorporated in 1988 with the Faculty of Education and Fine Arts.",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_sport,
+            contactInfo = " العنوان : جامعة اليرموك , اربد, الأردن\n" +
+                    " Physicaledu.fac@yu.edu.jo\n" +
+                    " 027211111 (2591)",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 13,
             name = "Fine Arts",
             description = "The Department of Fine Arts was founded at the beginning of the academic year 80/81 in the sections of the Faculty of Arts" +
                     " and remained in the Departments of Education and Arts, which was established in the academic year 88/89." +
                     " In 2000 year, the department became a College of Fine Arts .",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_fine_arts,
+            contactInfo = "Phone : 027211111(2581)\n" +
+                    "Fax : 027211112\n" +
+                    "E-mail : Finarts.fac@yu.edu.jo\n" +
+                    "Address :Yarmouk University, Irbid, Jordan",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 14,
             name = "Archaeology And Anthropology",
             description = "The Faculty of Archaeology and Anthropology at Yarmouk University was established in 1984, as the Institute of Archaeology and Anthropology," +
                     "aiming at conducting interdisciplinary researches and promoting public awareness of cultural heritage of Jordan and the Arab World.",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_archaeology,
+            contactInfo = "Phone : 027211111 (2271)\n" +
+                    "Fax : 0096227211155\n" +
+                    "E-mail : archaeology.fac@yu.edu.jo\n" +
+                    "Address :Yarmouk University, Irbid, Jordan",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 15,
             name = "Tourism and Hotels",
@@ -150,13 +248,28 @@ class Repository(
                     "university's direction to provide qualified and specialized human resources that contribute to driving " +
                     "local economic and social development, and to contribute to improving the quality of tourism services" +
                     " locally and regionally by providing qualified and trained human resources in the tourism sector.",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_tourism,
+            contactInfo = "A Yarmouk university, Irbid - Jordan\n" +
+                    "Etourism.fac@yu.edu.jo\n" +
+                    "P027211111  (2863 / 2862)\n" +
+                    "F0096227211153 / 3953",
+            locationOnMap = "Building s2, second floor"))
 
         facultyDao.insert(Faculty(id = 16,
             name = "Mass Communication",
             description = "The Faculty of Mass Communication is one of the colleges of Yarmouk University in Jordan." +
                     " It was established in 1976 and is the first media college in Jordan.",
-            type = FacultyType.HUMANITARIAN))
+            type = FacultyType.HUMANITARIAN,
+            imageResId = R.drawable.faculty_mass,
+            contactInfo = "Phone : 027211111 (6900)\n" +
+                    "\n" +
+                    "Fax : 0096227211148\n" +
+                    "\n" +
+                    "E-mail : mass.fac@yu.edu.jo\n" +
+                    "\n" +
+                    "Address :Yarmouk University, Irbid, Jordan",
+            locationOnMap = "Building s2, second floor"))
 
         //--------------------------------------------------------------------------------------------------------
 
@@ -409,5 +522,22 @@ class Repository(
             NewsItem(5, "افتتاح معرض الكتاب السنوي", "تدعوكم المكتبة الرئيسية لحضور افتتاح معرض الكتاب السنوي، والذي يضم آلاف العناوين الجديدة بخصومات خاصة للطلاب.", "July 15, 2025", "https://example.com/book_fair_image.jpg")
         )
         newsDao.insertAll(initialNews)
+
+        courseDao.insertAll(listOf(
+            Course(name = "Physics I", code = "PHY101", creditHours = 3, departmentOwnerId = 1),
+            Course(name = "Modern Physics", code = "PHY202", creditHours = 3, departmentOwnerId = 1)
+        ))
+
+        // دكاترة قسم الفيزياء
+        professorDao.insertAll(listOf(
+            Professor(name = "Dr. Ahmed Ali", title = "Professor", departmentOwnerId = 1),
+            Professor(name = "Dr. Fatima Saleh", title = "Assistant Professor", departmentOwnerId = 1)
+        ))
+
+        // مواد قسم الهندسة المدنية (اللي الـ departmentOwnerId بتاعه ممكن يكون 4 مثلاً)
+        courseDao.insertAll(listOf(
+            Course(name = "Statics", code = "CE201", creditHours = 3, departmentOwnerId = 4),
+            Course(name = "Fluid Mechanics", code = "CE305", creditHours = 3, departmentOwnerId = 4)
+        ))
     }
 }

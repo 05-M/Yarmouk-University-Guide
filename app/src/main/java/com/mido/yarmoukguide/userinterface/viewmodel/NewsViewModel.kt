@@ -19,8 +19,11 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
         val faqDao = database.faqDao()
         val lectureDao = database.lectureDao()
         val newsDao = database.newsDao()
+        val courseDao = database.courseDao()
+        val professorDao = database.professorDao()
 
-        repository = Repository(facultyDao, departmentDao, faqDao, lectureDao, newsDao)
+
+        repository = Repository(facultyDao, departmentDao, faqDao, lectureDao, newsDao,courseDao,professorDao)
 
         allNews = repository.allNews
     }

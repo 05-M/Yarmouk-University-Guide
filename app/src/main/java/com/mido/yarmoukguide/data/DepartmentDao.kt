@@ -13,4 +13,7 @@ interface DepartmentDao {
 
     @Query("SELECT * FROM departments_table WHERE facultyOwnerId = :facultyId ORDER BY name ASC")
     fun getDepartmentsForFaculty(facultyId: Int): Flow<List<Department>>
+
+    @Query("SELECT * FROM departments_table WHERE id = :departmentId")
+    fun getDepartmentById(departmentId: Int): Flow<Department?>
 }

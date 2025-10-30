@@ -5,8 +5,8 @@ plugins {
 }
 
 android {
-    namespace = "com.mido.yarmoukguide" // <<< عدل ده لو لازم
-    compileSdk = 34
+    namespace = "com.mido.yarmoukguide"
+    compileSdk = 35// <<< عدل ده لو لازم
 
     defaultConfig {
         applicationId = "com.mido.yarmoukguide" // <<< عدل ده لو لازم
@@ -77,4 +77,8 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.androidx.ui.tooling)
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.9.4")
+// كمان اتأكد إن الـ navigation-compose موجودة
+    implementation("androidx.navigation:navigation-compose:2.9.5")
 }

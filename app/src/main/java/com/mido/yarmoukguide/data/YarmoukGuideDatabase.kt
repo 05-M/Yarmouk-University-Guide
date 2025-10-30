@@ -12,8 +12,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [Faculty::class, Department::class, FaqItem::class, Lecture::class, NewsItem::class], // <<< ضفت Lecture و NewsItem بالمرة
-    version = 5, // <<< هنزود الـ version لـ 4
+    entities = [Faculty::class,
+        Department::class,
+        FaqItem::class,
+        Lecture::class,
+        NewsItem::class,
+        Course::class,
+        Professor::class
+    ],
+    version = 7,
     exportSchema = false
 )
 abstract class YarmoukGuideDatabase : RoomDatabase() {
@@ -23,6 +30,9 @@ abstract class YarmoukGuideDatabase : RoomDatabase() {
     abstract fun faqDao(): FaqDao
     abstract fun lectureDao(): LectureDao // (لما نعملهم)
     abstract fun newsDao(): NewsDao // (لما نعملهم)
+    abstract fun courseDao(): CourseDao      // <<<=== إضافة جديدة
+    abstract fun professorDao(): ProfessorDao  // <<<=== إضافة جديدة
+
 
     companion object {
         @Volatile
@@ -56,7 +66,9 @@ abstract class YarmoukGuideDatabase : RoomDatabase() {
                         database.departmentDao(),
                         database.faqDao(),
                         database.lectureDao() ,
-                        database.newsDao()// <<< نبعت الـ DAO الجديد
+                        database.newsDao(),
+                        database.courseDao(),
+                        database.professorDao()// <<< نبعت الـ DAO الجديد
                     )
                     repository.insertInitialData()
                 }

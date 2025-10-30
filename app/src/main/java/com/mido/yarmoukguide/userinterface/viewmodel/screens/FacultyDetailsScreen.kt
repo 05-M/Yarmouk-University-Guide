@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.mido.yarmoukguide.AppRoutes
 import com.mido.yarmoukguide.data.Department
 import com.mido.yarmoukguide.ui.theme.YarmoukGuideTheme
 import com.mido.yarmoukguide.userinterface.viewmodel.FacultiesViewModel
@@ -109,12 +110,29 @@ fun FacultyDetailsScreen(
                             fontWeight = FontWeight.Bold
                         )
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp)) // خط فاصل
+
+                        faculty.contactInfo?.let{contact ->
+                            Text("Contact:$contact", style = MaterialTheme.typography.bodyLarge)
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        faculty.locationOnMap?.let { location->
+                            Text("Location:$location", style = MaterialTheme.typography.bodyLarge)
+                        }
                     }
                 }
 
                 if (departments.isNotEmpty()) {
                     items(departments) { department -> // items بتلف على قايمة
-                        DepartmentCard(department = department) // كارت بسيط للقسم
+                        DepartmentCard(department = department,
+                            onClick = {
+                                val route = AppRoutes.DEPARTMENT_DETAILS_SCREEN.replace(
+                                    oldValue = "{departmentId}",
+                                    newValue = department.id.toString()
+                                )
+                                // val route = "department_details/${department.id}"
+                                navController.navigate(route)
+                            }
+                        ) // كارت بسيط للقسم
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 } else {
@@ -133,10 +151,11 @@ fun FacultyDetailsScreen(
 }
 
 @Composable
-fun DepartmentCard(department: Department, modifier: Modifier = Modifier) {
+fun DepartmentCard(department: Department, modifier: Modifier = Modifier, onClick: ()->Unit) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant) // لون مختلف شوية
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant), // لون مختلف شوية
+        onClick = onClick
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
@@ -149,6 +168,7 @@ fun DepartmentCard(department: Department, modifier: Modifier = Modifier) {
                 Text(
                     text = department.description,
                     style = MaterialTheme.typography.bodySmall
+
                 )
             }
         }

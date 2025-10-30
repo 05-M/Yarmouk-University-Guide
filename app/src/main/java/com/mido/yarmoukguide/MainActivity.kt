@@ -1,5 +1,6 @@
 package com.mido.yarmoukguide
 
+import DepartmentDetailsScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -37,6 +38,7 @@ object AppRoutes {
     const val NEWS_AND_EVENTS_SCREEN = "news_and_events"
     const val SERVICES_AND_FAQ_SCREEN = "services_and_faq"
     const val CHAT_SCREEN = "chat"
+    const val DEPARTMENT_DETAILS_SCREEN = "department_details/{departmentId"
 }
 
 class MainActivity : ComponentActivity() {
@@ -95,6 +97,14 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route = AppRoutes.CHAT_SCREEN) {
                         ChatScreen(navController = navController)
+                    }
+                    composable(
+                        route = AppRoutes.DEPARTMENT_DETAILS_SCREEN,
+                        // الـ arguments بتفضل زي ما هي
+                        arguments = listOf(navArgument("departmentId") { type = NavType.IntType }) // <<< الأفضل نخليه IntType
+                    ) {
+                        // مبقناش محتاجين نمرر الـ ID، الـ ViewModel هيعرف يجيبه لوحده
+                        DepartmentDetailsScreen(navController = navController)
                     }
                 }
             }

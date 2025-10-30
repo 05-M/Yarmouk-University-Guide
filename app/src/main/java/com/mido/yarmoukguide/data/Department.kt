@@ -22,5 +22,11 @@ data class Department(
     val name: String,
     val facultyOwnerId: Int,
     val description: String? = null,
-    val headOfDepartment: String? = null
+    val headOfDepartment: String? = null,
+    val locationInFaculty: String? = null, // موقعه من الكلية
+    val contactInfo: String? = null, // اتصل بنا
+    val totalCreditHours: Int? = null, // عدد ساعات الخطة
+    val estimatedCost: String? = null, // التكلفة التقديرية (كنص عشان ممكن يكون فيه تفاصيل)
+    val careerFields: String? = null // مجالات العمل (كنص طويل، ممكن نفصله بـ \n)
+    // ----------------------
 )
