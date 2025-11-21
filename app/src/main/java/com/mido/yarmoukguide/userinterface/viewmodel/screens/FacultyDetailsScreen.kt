@@ -167,7 +167,8 @@ fun DepartmentCard(department: Department, modifier: Modifier = Modifier, onClic
             if (department.description != null) {
                 Text(
                     text = department.description,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1
 
                 )
             }

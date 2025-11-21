@@ -2,20 +2,17 @@
 
 // ... (imports) ...
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,13 +27,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mido.yarmoukguide.data.Course
 import com.mido.yarmoukguide.data.Department
-import com.mido.yarmoukguide.data.Professor
 import com.mido.yarmoukguide.ui.viewmodel.DepartmentViewModel
 import kotlinx.coroutines.launch
 
@@ -59,7 +53,7 @@ fun DepartmentDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { (department?.name ?: null)?.let { Text(it) } },
+                title = { department?.name?.let { Text(it) } },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -87,8 +81,8 @@ fun DepartmentDetailsScreen(
             ) { pageIndex ->
                 when (pageIndex) {
                     0 -> AboutDepartmentTab(department = department)
-                    1 -> CoursesTab(courses = courses)
-                    2 -> ProfessorsTab(professors = professors)
+                    //1 -> CoursesTab(courses = courses)
+                    //2 -> ProfessorsTab(professors = professors)
                 }
             }
         }
@@ -99,32 +93,45 @@ fun DepartmentDetailsScreen(
 
 @Composable
 fun AboutDepartmentTab(department: Department?) {
-    LazyColumn(contentPadding = PaddingValues(16.dp)) {
-        item {
-            Text(department?.description ?: "No description available.", style = MaterialTheme.typography.bodyLarge)
+    if (department != null) {
+        Column(modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())) {
+            // عنوان "عن القسم"
+            Text("About the Department", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
-            department?.headOfDepartment?.let { Text("Head: $it", fontWeight = FontWeight.Bold) }
-            // ... ضيف باقي المعلومات
+            Text(
+                department.description ?: "No description available.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // عنوان "معلومات التواصل"
+            Text("Contact Information", style = MaterialTheme.typography.headlineSmall)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Head: ${department.headOfDepartment ?: "N/A"}")
+            Text("Location: ${department.locationInFaculty ?: "N/A"}")
+            Text("Email: ${department.contactEmail ?: "N/A"}")
+            Text("Phone: ${department.contactPhone ?: "N/A"}")
         }
     }
 }
 
-@Composable
-fun CoursesTab(courses: List<Course>) {
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(courses) { course ->
-            Text("${course.code} - ${course.name} (${course.creditHours} hours)")
-            Divider()
-        }
-    }
-}
-
-@Composable
-fun ProfessorsTab(professors: List<Professor>) {
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(professors) { professor ->
-            Text("${professor.title} ${professor.name}")
-            Divider()
-        }
-    }
-}
+//@Composable
+//fun CoursesTab(courses: List<Course>) {
+//    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+//        items(courses) { course ->
+//            Text("${course.code} - ${course.name} (${course.creditHours} hours)")
+//            Divider()
+//        }
+//    }
+//}
+//
+//@Composable
+//fun ProfessorsTab(professors: List<Professor>) {
+//    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+//        items(professors) { professor ->
+//            Text("${professor.title} ${professor.name}")
+//            Divider()
+//        }
+//    }
+//}

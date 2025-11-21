@@ -61,7 +61,9 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // Our libraries
-    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.material.icons.extended) {
+        exclude(group = "androidx.compose.material", module = "material")
+    }
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
@@ -78,7 +80,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.androidx.ui.tooling)
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.9.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate")
 // كمان اتأكد إن الـ navigation-compose موجودة
-    implementation("androidx.navigation:navigation-compose:2.9.5")
+    implementation("androidx.navigation:navigation-compose")
 }
